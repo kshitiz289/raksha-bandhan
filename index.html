@@ -119,6 +119,18 @@
       z-index: 4;
     }
 
+    .floating-hearts span {
+      position: absolute;
+      animation: floatUp linear forwards;
+    }
+
+    @keyframes floatUp {
+      to {
+        transform: translateY(-100vh);
+        opacity: 0;
+      }
+    }
+
     .message {
       position: absolute;
       bottom: 120px;
@@ -197,6 +209,20 @@
       z-index: 3;
     }
 
+    .music-toggle {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #ff85a2;
+      color: white;
+      font-size: 20px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
     @keyframes pulse {
       0%, 100% { transform: translateX(-50%) scale(1); }
       50% { transform: translateX(-50%) scale(1.2); }
@@ -225,6 +251,9 @@
   <!-- Glowing Heart -->
   <div class="heart">❤️</div>
 
+  <!-- Floating Hearts Container -->
+  <div class="floating-hearts" id="heartContainer"></div>
+
   <!-- Thread -->
   <div class="thread"></div>
 
@@ -245,6 +274,9 @@
 
   <!-- Button -->
   <button class="btn" onclick="showMemories()">📸 See Our Memories</button>
+
+  <!-- Toggle Music -->
+  <button class="music-toggle" onclick="toggleMusic()">🎵</button>
 
   <!-- Memory Gallery -->
   <div class="memories" id="memoriesBox">
@@ -272,11 +304,22 @@
   <script>
     const bgMusic = document.getElementById('bgMusic');
     const chime = document.getElementById('chime');
+    const heartContainer = document.getElementById("heartContainer");
+    let musicPlaying = false;
 
     window.addEventListener("click", () => {
       bgMusic.play().catch(() => {});
       chime.play();
     }, { once: true });
+
+    function toggleMusic() {
+      if (musicPlaying) {
+        bgMusic.pause();
+      } else {
+        bgMusic.play();
+      }
+      musicPlaying = !musicPlaying;
+    }
 
     function showMemories() {
       document.getElementById('memoriesBox').style.display = 'block';
@@ -285,7 +328,19 @@
     function closeMemories() {
       document.getElementById('memoriesBox').style.display = 'none';
     }
+
+    function createHeart() {
+      const heart = document.createElement("span");
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.top = "100vh";
+      heart.style.fontSize = (20 + Math.random() * 20) + "px";
+      heart.style.animationDuration = (4 + Math.random() * 3) + "s";
+      heartContainer.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }
+
+    setInterval(createHeart, 300);
   </script>
 </body>
 </html>
-
