@@ -16,6 +16,59 @@
       overflow: hidden;
     }
 
+    /* Gift Screen */
+    .gift-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(#ffe0f0, #ffc8dd);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      transition: opacity 1s ease;
+    }
+
+    .gift-box {
+      position: relative;
+      font-size: 100px;
+      cursor: pointer;
+      animation: shake 1.5s infinite;
+      transition: transform 0.5s ease;
+    }
+
+    .gift-box.opened {
+      transform: translateY(20px);
+    }
+
+    .gift-box.opened .lid {
+      transform: rotate(-110deg);
+    }
+
+    @keyframes shake {
+      0% { transform: rotate(0); }
+      25% { transform: rotate(3deg); }
+      50% { transform: rotate(-3deg); }
+      75% { transform: rotate(2deg); }
+      100% { transform: rotate(0); }
+    }
+
+    .tap-text {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #b30059;
+      font-weight: bold;
+      animation: fadeInDown 2s infinite alternate;
+    }
+
+    /* Main Content (hidden initially) */
+    #mainContent {
+      display: none;
+    }
+
     .thread {
       position: absolute;
       top: 50%;
@@ -241,48 +294,46 @@
 </head>
 <body>
 
-  <!-- Music -->
-  <audio id="bgMusic" src="music.mp3" loop></audio>
-  <audio id="chime" src="chime.mp3"></audio>
+  <!-- Gift Intro Screen -->
+  <div id="giftScreen" class="gift-screen">
+    <div class="gift-box" onclick="openGift()">
+      🎁
+      
+    </div>
+    <div class="tap-text">Tap to open</div>
+  </div>
 
-  <!-- Title -->
-  <div class="title">🌸 Happy Raksha Bandhan Didi 🌸</div>
+  <!-- Hidden Main Content -->
+  <div id="mainContent">
+    <!-- Music -->
+    <audio id="bgMusic" src="music.mp3" loop></audio>
+    <audio id="chime" src="chime.mp3"></audio>
 
-  <!-- Glowing Heart -->
-  <div class="heart">❤️</div>
+    <div class="title">🌸 Happy Raksha Bandhan Didi 🌸</div>
+    <div class="heart">❤️</div>
+    <div class="floating-hearts" id="heartContainer"></div>
+    <div class="thread"></div>
 
-  <!-- Floating Hearts Container -->
-  <div class="floating-hearts" id="heartContainer"></div>
-
-  <!-- Thread -->
-  <div class="thread"></div>
-
-  <!-- Rakhi wrapper with CSS Rakhi -->
-  <div class="rakhi-wrapper">
-    <div class="rakhi-img">
-      <div class="photo-center">
-        <img src="didi.png" alt="Didi">
+    <div class="rakhi-wrapper">
+      <div class="rakhi-img">
+        <div class="photo-center">
+          <img src="didi.png" alt="Didi">
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Message -->
-  <div class="message">
-    You’ve always tied every piece of my life together with love 💖<br>
-    Here's my Rakhi to you, glowing with all my gratitude 🌟
-  </div>
+    <div class="message">
+      You’ve always tied every piece of my life together with love 💖<br>
+      Here's my Rakhi to you, glowing with all my gratitude 🌟
+    </div>
 
-  <!-- Button -->
-  <button class="btn" onclick="showMemories()">📸 See Our Memories</button>
+    <button class="btn" onclick="showMemories()">📸 See Our Memories</button>
+    <button class="music-toggle" onclick="toggleMusic()">🎵</button>
 
-  <!-- Toggle Music -->
-  <button class="music-toggle" onclick="toggleMusic()">🎵</button>
-
-  <!-- Memory Gallery -->
-  <div class="memories" id="memoriesBox">
-    <button class="closeBtn" onclick="closeMemories()">×</button>
-    <h2>Our Sweet Memories 💖</h2>
-    <img src="mem1.jpg" alt="Memory 1">
+    <div class="memories" id="memoriesBox">
+      <button class="closeBtn" onclick="closeMemories()">×</button>
+      <h2>Our Sweet Memories 💖</h2>
+      <img src="mem1.jpg" alt="Memory 1">
     <img src="mem2.jpg" alt="Memory 2">
     <img src="mem3.jpg" alt="Memory 3">
     <img src="mem4.jpg" alt="Memory 4">
@@ -296,21 +347,17 @@
     <img src="mem12.jpg" alt="Memory 12">
     <img src="mem13.jpg" alt="Memory 13">
     <img src="mem14.jpg" alt="Memory 14">
+    </div>
+
+    <div class="footer">Made with ❤️ just for you, Didi</div>
   </div>
 
-  <!-- Footer -->
-  <div class="footer">Made with ❤️ just for you, Didi</div>
-
+  <!-- Script -->
   <script>
     const bgMusic = document.getElementById('bgMusic');
     const chime = document.getElementById('chime');
     const heartContainer = document.getElementById("heartContainer");
     let musicPlaying = false;
-
-    window.addEventListener("click", () => {
-      bgMusic.play().catch(() => {});
-      chime.play();
-    }, { once: true });
 
     function toggleMusic() {
       if (musicPlaying) {
@@ -319,10 +366,16 @@
         bgMusic.play();
       }
       musicPlaying = !musicPlaying;
+      playChime();
+    }
+    function playChime(){
+      chime.currentTime = 0;
+      chime.play();
     }
 
     function showMemories() {
       document.getElementById('memoriesBox').style.display = 'block';
+      playChime();
     }
 
     function closeMemories() {
@@ -341,6 +394,24 @@
     }
 
     setInterval(createHeart, 300);
+
+    function openGift() {
+      const box = document.querySelector('.gift-box');
+      const screen = document.getElementById('giftScreen');
+
+      box.classList.add('opened');
+      chime.play();
+
+      setTimeout(() => {
+        screen.style.opacity = 0;
+        setTimeout(() => {
+          screen.style.display = 'none';
+          document.getElementById('mainContent').style.display = 'block';
+          bgMusic.play();
+          musicPlaying = true;
+        }, 1000);
+      }, 1500);
+    }
   </script>
 </body>
 </html>
