@@ -298,9 +298,21 @@
   <div id="giftScreen" class="gift-screen">
     <div class="gift-box" onclick="openGift()">
       🎁
-      
     </div>
     <div class="tap-text">Tap to open</div>
+  </div>
+
+  <!-- Emotional Messages Sequence -->
+  <div id="messageSequence" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: none; align-items: center; justify-content: center;
+    background: rgba(255,240,245,0.95);
+    font-size: 28px; color: #b30059; font-weight: bold;
+    text-align: center; padding: 20px;
+    z-index: 9998; flex-direction: column;">
+    <div id="messageText" style="opacity: 0; transition: opacity 1s ease;"></div>
   </div>
 
   <!-- Hidden Main Content -->
@@ -334,22 +346,24 @@
       <button class="closeBtn" onclick="closeMemories()">×</button>
       <h2>Our Sweet Memories 💖</h2>
       <img src="mem1.jpg" alt="Memory 1">
-    <img src="mem2.jpg" alt="Memory 2">
-    <img src="mem3.jpg" alt="Memory 3">
-    <img src="mem4.jpg" alt="Memory 4">
-    <img src="mem5.jpg" alt="Memory 5">
-    <img src="mem6.jpg" alt="Memory 6">
-    <img src="mem7.jpg" alt="Memory 7">
-    <img src="mem8.jpg" alt="Memory 8">
-    <img src="mem9.jpg" alt="Memory 9">
-    <img src="mem10.jpg" alt="Memory 10">
-    <img src="mem11.jpg" alt="Memory 11">
-    <img src="mem12.jpg" alt="Memory 12">
-    <img src="mem13.jpg" alt="Memory 13">
-    <img src="mem14.jpg" alt="Memory 14">
+      <img src="mem2.jpg" alt="Memory 2">
+      <img src="mem3.jpg" alt="Memory 3">
+      <img src="mem4.jpg" alt="Memory 4">
+      <img src="mem5.jpg" alt="Memory 5">
+      <img src="mem6.jpg" alt="Memory 6">
+      <img src="mem7.jpg" alt="Memory 7">
+      <img src="mem8.jpg" alt="Memory 8">
+      <img src="mem9.jpg" alt="Memory 9">
+      <img src="mem10.jpg" alt="Memory 10">
+      <img src="mem11.jpg" alt="Memory 11">
+      <img src="mem12.jpg" alt="Memory 12">
+      <img src="mem13.jpg" alt="Memory 13">
+      <img src="mem14.jpg" alt="Memory 14">
+      <img src="mem15.jpg" alt="Memory 15">
     </div>
 
     <div class="footer">Made with ❤️ just for you, Didi</div>
+    <!-- <div class="footer">by kshitiz</div> -->
   </div>
 
   <!-- Script -->
@@ -395,6 +409,35 @@
 
     setInterval(createHeart, 300);
 
+    function showMessageSequence(messages) {
+      const container = document.getElementById('messageSequence');
+      const textEl = document.getElementById('messageText');
+      container.style.display = 'flex';
+      let index = 0;
+
+      function showNext() {
+        if (index >= messages.length) {
+          container.style.display = 'none';
+          document.getElementById('mainContent').style.display = 'block';
+          bgMusic.play();
+          musicPlaying = true;
+          return;
+        }
+        textEl.style.opacity = 0;
+        setTimeout(() => {
+          textEl.innerHTML = messages[index];
+          textEl.style.opacity = 1;
+          index++;
+          setTimeout(() => {
+            textEl.style.opacity = 0;
+            setTimeout(showNext, 1000);
+          }, 2500);
+        }, 500);
+      }
+
+      showNext();
+    }
+
     function openGift() {
       const box = document.querySelector('.gift-box');
       const screen = document.getElementById('giftScreen');
@@ -406,9 +449,14 @@
         screen.style.opacity = 0;
         setTimeout(() => {
           screen.style.display = 'none';
-          document.getElementById('mainContent').style.display = 'block';
+          showMessageSequence([
+            "Didi, you are my first best friend 💖",
+            "You’ve always been my guide, my support 🌟",
+            "You protect me, care for me, and scold me when needed 😄",
+            "On this Rakhi, I just want to say…",
+            "I’m so lucky to have you as my sister ❤️"
+          ])
           bgMusic.play();
-          musicPlaying = true;
         }, 1000);
       }, 1500);
     }
